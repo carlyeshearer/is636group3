@@ -5,56 +5,51 @@
 #TCP port to connect to and sends and receives messages from a server.
 
 import socket
-from threading import Thread
-import os
+import threading
+from datetime import datetime
 
-#reference videos: https://www.youtube.com/watch?v=8Q7OF8TP6u0
+#Global variables
+timestamp = datetime.now()
+format_timestamp = timestamp.strftime("%H:%M:%S")
 
 #Define functions
 
 def print_message(sender, message, prompt):
     #Erase the current input line, print message, then reprint the prompt
-    print(f"\r\n{sender}: {message}\n{prompt}", end="", flush=True)
+    print(f"\r\n{sender} ({format_timestamp}): {message}\n{prompt}", end="", flush=True)
 
-#Send a message to the server
-def send_message(client_socket):
-    #Send whatever is the input by the client as message
+def receive_messages(socket):
+    while True:
+        try:
+            message = socket.recv(1024)
+            if not message:
+                print("\nError: client disconnected from server.")
+                break
+            print(f"{message.decode()}")
+        except Exception:
+            break
+
+def start_client(port):
+    host = '127.0.0.1'
     try:
+        client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        client_socket.connect((host, port))
+        print(f"Connected to server at {host}:{port}")
+
+        # Start thread to listen for incoming messages
+        threading.Thread(target=receive_messages, args=(client_socket,), daemon=True).start()
+
         while True:
-            message = input("Client: ")
+            message = input("")
             if message.strip().lower() == "exit":
-                client_socket.send(message.encode())
                 break
-            client_socket.send(message.encode())
-    #If there is an error, close the connection
-    except (ConnectionAbortedError, OSError):
-        print("Connection closed.")
+            client_socket.sendall(message.encode())
 
-#Receive a message from the server
-def receive_message(client_socket):
-    try:
-        while True:
-            server_message = client_socket.recv(1024).decode()
-            if not server_message:
-                print("Server disconnected.")
-                break
-            if server_message.strip().lower() == "exit":
-                print("Server ended the chat.")
-                break
-            print_message("Server", server_message, "Client: ")
-    #If there is an error, close the connection
-    except (ConnectionAbortedError, OSError):
-        print("Connection closed.")
+    except Exception as e:
+        print(f"Error: {e}")
     finally:
         client_socket.close()
-
-#Start threads and send initial message
-def start_messaging(client_socket):
-    receive_thread = Thread(target=receive_message, args=(client_socket,))
-    receive_thread.start()
-    send_message(client_socket)
-    receive_thread.join()
-    print("Chat session ended.")
+        print("Client disconnected.")
 
 #Main program
 
@@ -66,10 +61,4 @@ while port < 1025 or port > 65535:
     print("Error: Invalid. Please try again.")
     port = int(input("Welcome! Please specify the TCP port you would like to connect to: "))
 
-#Create client socket listen on localhost
-host = '127.0.0.1'
-client_socket = socket.socket()
-client_socket.connect((host, port))
-
-#Display messaging output
-start_messaging(client_socket)
+start_client(port)
