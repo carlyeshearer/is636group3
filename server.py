@@ -33,6 +33,7 @@ def forward_messages(message, sender_socket=None):
                     client.close()
                     clients.remove(client)
 
+#Send welcome message to newly connected clients
 def send_welcome_message(client_connected):
     welcome_message = "Welcome! Chat with the server by typing your message below. To exit, please enter \"exit\".\n"
     with clients_lock:
