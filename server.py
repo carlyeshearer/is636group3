@@ -2,7 +2,7 @@
 #Course: IS/HCC636
 #Project: Client/Server Chatbot
 #Descrption: This program implements a simple server, which asks the user for a 
-#TCP port to listen on and sends and receives messages from a client.
+#TCP port to listen on and sends and receives messages from multiple clients.
 
 import socket
 import threading
@@ -33,12 +33,27 @@ def forward_messages(message, sender_socket=None):
                     client.close()
                     clients.remove(client)
 
+#Send welcome message to newly connected clients
+def send_welcome_message(client_connected):
+    welcome_message = "Welcome! Chat with the server by typing your message below. To exit, please enter \"exit\".\n"
+    with clients_lock:
+        try:
+            client_connected.send(welcome_message.encode())
+        except:
+            print("ERROR WELCOME")
+            client_connected.close()
+            clients.remove(client_connected)
+
 #Handle messages from connected clients
 def handle_clients(client_socket, client_address):
     print(f"New connection from {client_address}")
+    #welcome_message = "Welcome! Chat with the server by typing your message below. To exit, please enter \"exit\".\n"
     #Lock socket before appending to ensure no race conditions
     with clients_lock:
         clients.append(client_socket)
+
+    #forward_messages(welcome_message.encode(), sender_socket=server_socket)
+    send_welcome_message(client_socket)
 
     try:
         while True:
@@ -81,12 +96,10 @@ def send_message():
 def start_server(port):
     #Create thread for server to send messages
     threading.Thread(target=send_message, daemon=True).start()
-    welcome_message = "Welcome! Chat with the server by typing your message below. To exit, please enter \"exit\".\n"
 
     try:
         while True:
             client_socket, client_address = server_socket.accept()
-            forward_messages(welcome_message.encode())
             threading.Thread(target=handle_clients, args=(client_socket, client_address), daemon=True).start()
     except Exception:
         print("\nServer shutting down...")

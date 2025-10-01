@@ -2,7 +2,8 @@
 #Course: IS/HCC636
 #Project: Client/Server Chatbot
 #Descrption: This program implements a simple client, which asks the user for a 
-#TCP port to connect to and sends and receives messages from a server.
+#TCP port to connect to and sends and receives messages from a server and other
+#connected clients.
 
 import socket
 import threading
