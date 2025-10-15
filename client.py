@@ -85,6 +85,12 @@ class ChatClientGUI:
             
             #Start receive thread
             threading.Thread(target=self.receive_messages, daemon=True).start()
+
+            #Let the other clients know this client has joined
+            try:
+                self.client_socket.sendall("joined".encode())
+            except:
+                pass
         #Close window on connection error
         except Exception as e:
             self.update_chat_log(f"Connection Error: Could not connect to server ({e})\n", "Error")
