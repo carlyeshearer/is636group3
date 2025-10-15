@@ -21,7 +21,7 @@ class ChatClientGUI:
         self.window.configure(bg="#808080") 
         
         #Chat history - TO BE IMPLEMENTED
-        self.chat_label = Label(self.window, text="Chat History:", padx=5, pady=5, bg="#808080")
+        self.chat_label = Label(self.window, text="YapSesh Chat History:", padx=5, pady=5, bg="#808080")
         self.chat_label.pack(fill='x')
 
         #Chat log where messages are displayed
