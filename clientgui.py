@@ -1,7 +1,8 @@
 import socket
 import threading
 import sys
-from tkinter import Tk, Text, Entry, Button, END, Label, Frame
+from tkinter import Tk, Text, Entry, Button, END, Label
+from tkinter import Toplevel, simpledialog # simpledialog is kept in case you want to use it later, but not used in the final version
 from datetime import datetime
 
 class ChatClientGUI:
@@ -16,57 +17,26 @@ class ChatClientGUI:
         self.window.title(f"Client Chatbot - Connected to {host}:{port}")
         self.window.geometry("500x500")
         self.window.protocol("WM_DELETE_WINDOW", self.on_closing)
-        self.window.configure(bg="#808080") 
-        
+
         # Chat History Display
-        self.chat_label = Label(self.window, text="Chat History:", padx=5, pady=5, bg="#808080")
+        self.chat_label = Label(self.window, text="Chat History:", padx=5, pady=5)
         self.chat_label.pack(fill='x')
 
-        # CHAT LOG: Dark Gray Background
-        self.chat_log = Text(self.window, state='disabled', wrap='word', height=20, width=50, bg="#303030", fg="white")
+        self.chat_log = Text(self.window, state='disabled', wrap='word', height=20, width=50)
         self.chat_log.pack(padx=10, pady=5, fill='both', expand=True)
-        
-        # Configure tags for basic styling (Updated colors for dark background)
-        self.chat_log.tag_config('System', foreground='lightblue') 
-        self.chat_log.tag_config('Error', foreground='red', font=('Helvetica', 10, 'bold'))
-        self.chat_log.tag_config('Client', foreground='white', font=('Helvetica', 10, 'bold'))
-        self.chat_log.tag_config('Server', foreground='lightgreen', font=('Helvetica', 10))
-
-        # --- Input Frame (holds Entry and Buttons side-by-side) ---
-        input_frame = Frame(self.window, bg="#f0f0f0")
-        input_frame.pack(padx=10, pady=(0, 10), fill='x')
 
         # Input Field
-        self.input_field = Entry(input_frame, bg="white", fg="#333", borderwidth=2, relief="groove")
-        self.input_field.bind("<Return>", self.send_message_event)
-        self.input_field.pack(side='left', fill='x', expand=True, ipady=3)
-        self.input_field.focus_set()
+        self.msg_label = Label(self.window, text="Your Message:", padx=5, pady=5)
+        self.msg_label.pack(fill='x')
+        
+        self.input_field = Entry(self.window)
+        # Binds the Enter key to send the message
+        self.input_field.bind("<Return>", self.send_message_event) 
+        self.input_field.pack(padx=10, pady=5, fill='x')
 
-        # Send Button (PINK/WHITE - FIXED FOR MACOS)
-        self.send_button = Button(input_frame, 
-                                 text="Send", 
-                                 command=self.send_message, 
-                                 bg='pink',      
-                                 fg='white',     
-                                 relief="raised",
-                                 activebackground='pink',
-                                 activeforeground='white',
-                                 highlightbackground='pink',
-                                 padx=10)
-        self.send_button.pack(side='right', padx=(5, 0))
-
-        # -- End Chat Button
-        self.end_chat_button = Button(input_frame, 
-                                      text="End Chat", 
-                                      command=self.on_closing, 
-                                      bg='#dc3545', 
-                                      fg='white',
-                                      relief="raised",
-                                      activebackground='#c82333',
-                                      activeforeground='white',
-                                      highlightbackground='#dc3545',
-                                      padx=10)
-        self.end_chat_button.pack(side='right', padx=(5, 5)) # Added padding on both sides to separate it
+        # Send Button
+        self.send_button = Button(self.window, text="Send", command=self.send_message)
+        self.send_button.pack(padx=10, pady=5)
 
         # Connect immediately
         self.attempt_connection()
@@ -84,20 +54,23 @@ class ChatClientGUI:
             threading.Thread(target=self.receive_messages, daemon=True).start()
 
         except Exception as e:
-            self.update_chat_log(f"Connection Error: Could not connect to server ({e})\n", "Error")
+            self.update_chat_log(f"Connection Error: {e}\n", "Error")
             self.is_connected = False
-            self.window.after(3000, self.window.destroy)
+            # Close the window after 3 seconds on failure
+            self.window.after(3000, self.window.destroy) 
 
     def receive_messages(self):
         """Runs in a separate thread to listen for server messages."""
         while self.is_connected:
             try:
+                # Blocking call: waits for a message
                 message = self.client_socket.recv(1024)
                 if not message:
                     self.update_chat_log("\n--- Server Disconnected ---\n", "System")
                     self.is_connected = False
                     break
                 
+                # Decode and display the message
                 self.update_chat_log(message.decode() + "\n", "Server")
 
             except Exception:
@@ -109,6 +82,7 @@ class ChatClientGUI:
         if self.client_socket:
             self.client_socket.close()
         
+        # Ensure the GUI can be closed if the network thread breaks
         if self.window.winfo_exists():
             self.window.after(100, self.window.destroy)
 
@@ -123,7 +97,7 @@ class ChatClientGUI:
             return
 
         message = self.input_field.get()
-        self.input_field.delete(0, END)
+        self.input_field.delete(0, END) # Clear the input field
 
         if not message.strip():
             return
@@ -144,17 +118,22 @@ class ChatClientGUI:
     def update_chat_log(self, message, sender):
         """Safely updates the Tkinter Text widget."""
         self.chat_log.config(state='normal')
-        self.chat_log.insert(END, message, sender)
+        
+        # Basic tagging for color/font can go here if desired
+        tag = 'normal' 
+        
+        self.chat_log.insert(END, message, tag)
         self.chat_log.config(state='disabled')
-        self.chat_log.see(END)
+        self.chat_log.see(END) # Scroll to the bottom
 
     def on_closing(self):
         """Handles closing the window."""
         if self.is_connected and self.client_socket:
+            # Send an 'exit' signal to the server before closing
             try:
                 self.client_socket.sendall("exit".encode())
             except:
-                pass
+                pass 
             self.is_connected = False
             self.client_socket.close()
         self.window.destroy()
@@ -162,15 +141,18 @@ class ChatClientGUI:
 # ----------------- Main Execution Block (Uses sys.argv) -----------------
 
 if __name__ == "__main__":
-    HOST = '127.0.0.1'
+    HOST = '127.0.0.1' 
     
-    # Ensures port number is provided when running from the terminal
+    # 1. Check for command-line argument (the port number)
     if len(sys.argv) != 2:
         print("Usage: python3 client.py <PORT>")
         sys.exit(1)
 
     try:
+        # 2. Convert the argument to an integer (this is sys.argv[1])
         port = int(sys.argv[1])
+        
+        # 3. Validate the port range
         if port < 1025 or port > 65535:
             print("Error: Port must be between 1025 and 65535.")
             sys.exit(1)
@@ -179,5 +161,6 @@ if __name__ == "__main__":
         print("Error: Port must be a valid integer.")
         sys.exit(1)
 
+    # 4. Launch the GUI
     app = ChatClientGUI(HOST, port)
     app.window.mainloop()
