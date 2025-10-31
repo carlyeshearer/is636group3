@@ -149,7 +149,8 @@ class ChatServerGUI:
 
         except Exception as e:
             if self.is_running: # Only log error if not a graceful shutdown
-                 self.update_chat_log(f"Client handler error for {client_address}: {e}\n", "Error")
+                #self.update_chat_log(f"Client handler error for {client_address}: {e}\n", "Error")
+                print(f"Client handler error for {client_address}: {e}\n", "Error")
 
         # Remove client if they disconnect
         finally:
