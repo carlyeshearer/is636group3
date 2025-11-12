@@ -4,3 +4,93 @@
 [14:12:46] Client 63287: hiiii
 [14:13:00] Server: hey
 [14:12:46] Client 63287: exit
+[15:00:24] Chat initiated
+[15:00:24] Server: Welcome! Chat with the server by typing your message below. To exit, please click the "End Chat" button.
+[15:00:24] Client 49158: joined
+[15:00:44] Server: Yoo
+[15:00:24] Client 49158: hola
+[15:00:24] Client 49158: exit
+[15:06:13] Server: yo
+[15:11:59] Server: testing
+[15:17:40] Server: hello
+[15:17:33] Chat initiated
+[15:17:33] Server: Welcome! Chat with the server by typing your message below. To exit, please click the "End Chat" button.
+[15:17:33] Client 49251: joined
+[15:17:33] Client 49251: end
+[15:18:06] Server: exit
+[15:18:15] Server: exit
+[15:22:09] Server: yo
+[15:28:20] Server: -.-
+
+===== New Yap Session: 15:28:43 =====
+[15:28:59] Server: heyy
+
+===== New Yap Session: 15:30:29 =====
+[15:30:37] Server: exit
+
+===== New Yap Session: 15:30:57 =====
+[15:31:02] Server: exit
+
+===== New Yap Session: 15:52:27 =====
+[15:52:24] Chat initiated
+[15:52:24] Server: Welcome! Chat with the server by typing your message below. To exit, please click the "End Chat" button.
+[15:52:24] Client 49443: joined
+[15:52:49] Server: wow
+[15:52:24] Client 49443: :) how are you
+[15:53:11] Server: good thanks
+[15:52:24] Client 49443: exit
+
+===== New Yap Session: 16:06:40 =====
+[16:06:49] Server: heyy
+
+===== Yap Session Ended: 16:06:40 =====
+Total Messages This Session: 1
+===== New Yap Session: 16:08:14 =====
+[16:08:21] Server: hey
+
+===== Yap Session Ended: 16:08:14 =====
+Total Messages This Session: 1
+===== New Yap Session: 16:08:35 =====
+
+===== New Yap Session: 16:09:48 =====
+[16:09:48] Chat initiated
+[16:09:48] Server: Welcome! Chat with the server by typing your message below. To exit, please click the "End Chat" button.
+[16:09:48] Client 49537: joined
+[16:09:48] Client 49537: long time no see
+[16:10:22] Server: yeah hey
+[16:09:48] Client 49537: bye 
+[16:10:28] Server: cool
+[16:10:34] Server: bye
+
+===== Yap Session Ended: 16:09:48 =====
+Total Messages This Session: 8
+
+===== New Yap Session: 16:11:22 =====
+[16:11:34] Server: hey
+[16:11:36] Server: bye
+===== Yap Session Ended: 16:11:22 =====Total Messages This Session: 2
+
+===== New Yap Session: 16:12:30 =====
+[16:12:37] Server: yo
+===== Yap Session Ended: 16:12:30 =====
+Total Messages This Session: 1
+===== New Yap Session: 16:12:52 =====
+[16:12:58] Server: yay
+===== Yap Session Ended: 16:12:52 =====
+Total Messages This Session: 1
+===== New Yap Session: 16:13:58 =====
+[16:14:14] Server: good afternoon
+===== Yap Session Ended: 16:13:58 =====
+Total Messages This Session: 1
+
+===== New Yap Session: 16:14:54 =====
+[16:14:54] Chat initiated
+[16:14:54] Server: Welcome! Chat with the server by typing your message below. To exit, please click the "End Chat" button.
+[16:14:54] Client 49576: joined
+[16:14:54] Client 49576: hi how are you
+[16:15:23] Server: good im fine
+[16:14:54] Client 49576: wow this chat log is long
+[16:15:49] Server: yeah, bye
+[16:14:54] Client 49576: exit
+===== Yap Session Ended: 16:14:54 =====
+Total Messages This Session: 8

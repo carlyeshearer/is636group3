@@ -26,6 +26,7 @@ class ChatServerGUI:
         self.port = port
         self.server_socket = None
         self.is_running = True
+        self.message_count = 0
 
         # Tkinter window
         self.window = Tk()
@@ -94,10 +95,22 @@ class ChatServerGUI:
         self.chat_log.config(state='disabled')
         self.chat_log.see(END)
 
-    #Log messages to history of chats file
+    #Log messages to history of chats file, counting each message
     def log_message(self, message):
+        self.message_count += 1
         with open("history.txt", "a", encoding="utf-8") as file:
             file.write(f"{message}")
+    
+    #Adds header to imform a new chat session starts
+    def new_session_log(self):
+        with open("history.txt", "a", encoding="utf-8") as file:
+            file.write(f"\n===== New Yap Session: {timestamp} =====\n")
+    
+    #Adds header to inform chat session ended and total number of messages that session
+    def end_session_log(self):
+        with open("history.txt", "a", encoding="utf-8") as file:
+            file.write(f"===== Yap Session Ended: {timestamp} =====")
+            file.write(f"\nTotal Messages This Session: {self.message_count}\n")
 
     # Send messages sent by one client to all other clients
     def forward_messages(self, message, sender_socket=None):
@@ -176,6 +189,7 @@ class ChatServerGUI:
             self.server_socket.bind((self.host, self.port))
             self.server_socket.listen()
             self.update_chat_log(f"Server listening on {self.host}:{self.port}\n", "System")
+            self.new_session_log()
 
             while self.is_running:
                 try:
@@ -241,7 +255,8 @@ class ChatServerGUI:
         
         # Give the main server thread a moment to exit the accept loop
         # Then safely destroy the window
-        threading.Thread(target=lambda: self.window.after(100, self.window.destroy)).start()
+        threading.Thread(target=lambda: self.window.after(300, self.window.destroy)).start()
+        self.end_session_log()
 
 # Prompt user for TCP port to listen on
 def get_port_from_user():
