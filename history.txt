@@ -1,0 +1,6 @@
+[14:12:46] Chat initiated
+[14:12:46] Server: Welcome! Chat with the server by typing your message below. To exit, please click the "End Chat" button.
+[14:12:46] Client 63287: joined
+[14:12:46] Client 63287: hiiii
+[14:13:00] Server: hey
+[14:12:46] Client 63287: exit

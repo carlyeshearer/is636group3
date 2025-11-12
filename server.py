@@ -15,7 +15,9 @@ from tkinter.scrolledtext import ScrolledText
 HOST = '127.0.0.1'
 clients = []
 clients_lock = threading.Lock()
-server_socket = None # Will be initialized in start_server_gui
+server_socket = None #Will be initialized in start_server_gui
+history_file = "history.txt"
+timestamp = datetime.now().strftime("%H:%M:%S")
 
 # Define GUI Class for Server
 class ChatServerGUI:
@@ -92,6 +94,10 @@ class ChatServerGUI:
         self.chat_log.config(state='disabled')
         self.chat_log.see(END)
 
+    #Log messages to history of chats file
+    def log_message(self, message):
+        with open("history.txt", "a", encoding="utf-8") as file:
+            file.write(f"{message}")
 
     # Send messages sent by one client to all other clients
     def forward_messages(self, message, sender_socket=None):
@@ -130,6 +136,8 @@ class ChatServerGUI:
             clients.append(client_socket)
 
         self.send_welcome_message(client_socket)
+        self.log_message(f"[{timestamp}] Chat initiated\n")
+        self.log_message(f"[{timestamp}] Server: Welcome! Chat with the server by typing your message below. To exit, please click the \"End Chat\" button.\n")
 
         try:
             while self.is_running:
@@ -138,13 +146,13 @@ class ChatServerGUI:
                     break
 
                 # Display received messages to server and forward to others
-                timestamp = datetime.now().strftime("%H:%M:%S")
                 decoded_msg = message.decode()
                 # Use only the port in the message displayed to server and forwarded to clients
                 formatted_server_log = f"[{timestamp}] Client {client_port}: {decoded_msg}\n"
                 formatted_client_msg = f"[{timestamp}] Client {client_port}: {decoded_msg}"
 
                 self.update_chat_log(formatted_server_log, "Client")
+                self.log_message(f"[{timestamp}] Client {client_port}: {decoded_msg}\n")
                 self.forward_messages(formatted_client_msg.encode(), sender_socket=client_socket)
 
         except Exception as e:
@@ -206,6 +214,7 @@ class ChatServerGUI:
         formatted_client_msg = f"[{timestamp}] Server: {message}"
 
         self.update_chat_log(formatted_server_log, "Server")
+        self.log_message(f"[{timestamp}] Server: {message}\n")
         self.forward_messages(formatted_client_msg.encode())
 
   # Cleanup socket to shutdown server
