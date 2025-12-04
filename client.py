@@ -1,8 +1,14 @@
+#Authors: Carly Shearer (WH10650), Liza Mupende (IL34937), Amy Ajih (PF07251)
+#Course: IS/HCC636
+#Project: Client/Server Chatbot
+#Descrption: This program implements a simple client with a GUI, which asks the user for a
+#TCP port to listen on and sends and receives messages to and from the server and other clients.
+
 import socket
 import threading
-import sys
+import time
 from tkinter import Tk, Text, Entry, Button, END, Label, Frame
-from tkinter import Toplevel, simpledialog
+from tkinter import simpledialog
 from datetime import datetime
 
 #Define client GUI objects
@@ -20,7 +26,7 @@ class ChatClientGUI:
         self.window.protocol("WM_DELETE_WINDOW", self.on_closing)
         self.window.configure(bg="#808080") 
         
-        #Chat history - TO BE IMPLEMENTED
+        #Chat history
         self.chat_label = Label(self.window, text="YapSesh Chat History:", padx=5, pady=5, bg="#808080")
         self.chat_label.pack(fill='x')
 
@@ -109,8 +115,8 @@ class ChatClientGUI:
                 
                 self.update_chat_log(message.decode() + "\n", "Server")
             except Exception:
-                if self.is_connected:
-                    self.update_chat_log("\n--- An error occurred during reception. ---\n", "Error")
+                if self.is_connected: #Send message that server disconnected to clients
+                    self.update_chat_log("\n--- Server disconnected. Ending client session... ---\n", "Error")
                 self.is_connected = False
                 break
         
@@ -119,6 +125,7 @@ class ChatClientGUI:
             self.client_socket.close()
         
         if self.window.winfo_exists():
+            time.sleep(2)
             self.window.after(100, self.window.destroy)
 
     #Event to send message triggered by Enter key press
