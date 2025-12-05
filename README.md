@@ -10,6 +10,7 @@ Client.py implements the logic for the client.
 
 This program requires Python 3 to be installed. To run the program, the server must be started first. To start the server, run the following in a terminal:
 - python3 server.py
+
 To connect a client, run the following in a terminal. To connect multiple clients, this command should be run separately with one terminal per client:
 - python3 client.py
 
@@ -26,3 +27,4 @@ References:
 - https://www.youtube.com/watch?v=8Q7OF8TP6u0
 - https://medium.com/@denizhalil/advanced-socket-programming-with-python-multi-client-and-server-communication-c0416836c3bd
 - https://www.robotexchange.io/t/-how-to-create-tcp-ip-server-that-can-handle-multi-client-with-python-the-client-could-be-laptop-and-robot/3317
+
